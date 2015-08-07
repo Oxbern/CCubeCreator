@@ -1,11 +1,20 @@
+#include "general.h"
 #include "mainwindow.h"
-#include <QApplication>
+#include "aboutwindow.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    QApplication app(argc, argv);
 
-    return a.exec();
+    //Create main objects
+    MainWindow mainWindow;
+    AboutWindow aboutWindow;
+
+    //Connect objets
+    QObject::connect(&mainWindow, SIGNAL(displayAboutWindow()), &aboutWindow, SLOT(show()));
+
+    //Display main window
+    mainWindow.show();
+
+    return app.exec();
 }
