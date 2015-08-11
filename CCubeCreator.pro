@@ -14,17 +14,32 @@ TEMPLATE = app
 CONFIG += c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    aboutwindow.cpp \
-    ccubedisplay.cpp
+        GUI/mainwindow.cpp \
+    GUI/aboutwindow.cpp \
+    GUI/ccubedisplay.cpp \
+    Database/pattern.cpp \
+    Database/group.cpp \
+    Database/database.cpp \
+    Database/option.cpp \
+    Database/dbnode.cpp
 
-HEADERS  += mainwindow.h \
-    aboutwindow.h \
-    ccubedisplay.h \
-    general.h
+HEADERS  += GUI/mainwindow.h \
+    GUI/aboutwindow.h \
+    GUI/ccubedisplay.h \
+    general.h \
+    Database/pattern.h \
+    Database/group.h \
+    Database/database.h \
+    Database/option.h \
+    Database/dbnode.h
 
-FORMS    += mainwindow.ui \
-    aboutwindow.ui
+FORMS    += GUI/mainwindow.ui \
+    GUI/aboutwindow.ui
 
 RESOURCES += \
     resources.qrc
+
+INCLUDEPATH += Databse \
+    GUI
+
+win32:LIBS += -lopengl32

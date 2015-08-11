@@ -64,6 +64,9 @@ class CCubeDisplay : public QGLWidget
     public slots :
 
         //void recevoir_nouveaux_points(QList<QVector3D> const& p);
+        void toggleAxesDisplay();
+        void togglePositionsDisplay();
+        void resetView();
 };
 
 #endif // CCUBEDISPLAY_H

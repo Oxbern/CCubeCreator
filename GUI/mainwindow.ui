@@ -77,7 +77,10 @@
         </item>
        </layout>
       </widget>
-      <widget class="QSplitter" name="splitter_3">
+      <widget class="QSplitter" name="mainSplitterRight">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>1</horstretch>
@@ -142,6 +145,12 @@
               <property name="text">
                <string>A</string>
               </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
@@ -154,6 +163,9 @@
               </property>
               <property name="text">
                <string>P</string>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -186,7 +198,7 @@
            </layout>
           </item>
           <item>
-           <widget class="CCubeDisplay" name="widget" native="true">
+           <widget class="CCubeDisplay" name="ccubeDisplay" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>100</horstretch>
@@ -226,7 +238,7 @@
                <string>Select image</string>
               </property>
               <property name="icon">
-               <iconset resource="resources.qrc">
+               <iconset resource="../resources.qrc">
                 <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/mimetypes/image.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/mimetypes/image.png</iconset>
               </property>
              </widget>
@@ -245,6 +257,16 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>No image</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="label_3">
@@ -327,7 +349,7 @@
              <string>Add</string>
             </property>
             <property name="icon">
-             <iconset resource="resources.qrc">
+             <iconset resource="../resources.qrc">
               <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/gtk-add.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/gtk-add.png</iconset>
             </property>
            </widget>
@@ -789,13 +811,13 @@
               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Welcome to CCubeCreator.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You can use this software to create patterns to display on the CCube. &lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Draw&lt;/span&gt; patterns, &lt;span style=&quot; font-weight:600;&quot;&gt;organize&lt;/span&gt; them and &lt;span style=&quot; font-weight:600;&quot;&gt;export&lt;/span&gt; them to a database that will be read by the CCube from its SD card.&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In case you need help, take a look at the manual (F11)!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:600;&quot;&gt;Welcome to CCubeCreator.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt; font-weight:600;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;You can use this software to create patterns to display on the CCube. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:600;&quot;&gt;Draw&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt; patterns, &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:600;&quot;&gt;organize&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt; them and &lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:600;&quot;&gt;export&lt;/span&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt; them to a database that will be read by the CCube from its SD card.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;In case you need help, take a look at the manual (F11)!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="textInteractionFlags">
               <set>Qt::NoTextInteraction</set>
@@ -818,7 +840,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>934</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatabase">
@@ -885,7 +907,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionNew">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/filenew.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/filenew.png</iconset>
    </property>
    <property name="text">
@@ -900,7 +922,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionOpen">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/fileopen.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/fileopen.png</iconset>
    </property>
    <property name="text">
@@ -915,7 +937,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/filesave.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/filesave.png</iconset>
    </property>
    <property name="text">
@@ -930,7 +952,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionSave_as">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/filesaveas.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/filesaveas.png</iconset>
    </property>
    <property name="text">
@@ -945,7 +967,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionReset">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/edit-clear.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/edit-clear.png</iconset>
    </property>
    <property name="text">
@@ -957,7 +979,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionManual">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/apps/gnome-help.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/apps/gnome-help.png</iconset>
    </property>
    <property name="text">
@@ -972,7 +994,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionShortcuts">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/apps/gnome-settings.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/apps/gnome-settings.png</iconset>
    </property>
    <property name="text">
@@ -995,7 +1017,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionUndo">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/edit-undo.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/edit-undo.png</iconset>
    </property>
    <property name="text">
@@ -1007,7 +1029,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionRedo">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/edit-redo.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/edit-redo.png</iconset>
    </property>
    <property name="text">
@@ -1019,7 +1041,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset resource="resources.qrc">
+    <iconset resource="../resources.qrc">
      <normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/exit.png</normaloff>:/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/exit.png</iconset>
    </property>
    <property name="text">
@@ -1043,7 +1065,7 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

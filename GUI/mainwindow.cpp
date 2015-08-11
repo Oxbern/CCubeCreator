@@ -20,11 +20,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     { //Set the size of the option panel
         QList<int> sizes { 400, 180 };
-        ui->splitter_3->setSizes(sizes);
+        ui->mainSplitterRight->setSizes(sizes);
     }
 
     //Connections
     connect(ui->actionAbout, SIGNAL(triggered()), this, SIGNAL(displayAboutWindow()));
+    connect(ui->btnResetView, SIGNAL(released()), ui->ccubeDisplay, SLOT(resetView()));
+    connect(ui->btnAxes, SIGNAL(released()), ui->ccubeDisplay, SLOT(toggleAxesDisplay()));
+    connect(ui->btnPositions, SIGNAL(released()), ui->ccubeDisplay, SLOT(togglePositionsDisplay()));
 }
 
 MainWindow::~MainWindow()

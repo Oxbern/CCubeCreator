@@ -3,11 +3,7 @@
 CCubeDisplay::CCubeDisplay(QWidget *parent)
     : QGLWidget(parent)
 {
-    camR = DEFAULT_ARCBALL_RADIUS;
-    camT = -180;
-    camP = -90;
-    rotY = 0;
-    computeCameraCoordinates();
+    resetView();
 
     displayAxes = true;
     displayPositions = false;
@@ -188,6 +184,24 @@ void CCubeDisplay::computeCameraCoordinates()
     }
 }
 
+void CCubeDisplay::toggleAxesDisplay()
+{
+    displayAxes = !displayAxes;
+}
+
+void CCubeDisplay::togglePositionsDisplay()
+{
+    displayPositions = !displayPositions;
+}
+
+void CCubeDisplay::resetView()
+{
+    camR = DEFAULT_ARCBALL_RADIUS;
+    camT = -180;
+    camP = -90;
+    computeCameraCoordinates();
+}
+
 QVector3D CCubeDisplay::ccubeToOpenGL(QVector3D const& v) const
 {
     /* On the CCube :
@@ -339,7 +353,6 @@ void CCubeDisplay::drawText(double x, double y, double z, QString const & text, 
 
     //glEnable(GL_LIGHTING);
 }
-
 
 void CCubeDisplay::normalize(float * vector) const
 {
