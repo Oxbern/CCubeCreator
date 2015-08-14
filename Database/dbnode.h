@@ -20,6 +20,7 @@ class DbNode
         bool canHaveChildren() const;
         int getNumberOfChildren() const;
         int getIndex() const;
+        Qt::ItemFlags getFlags() const;
 
 
     protected :

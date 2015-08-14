@@ -4,6 +4,7 @@
 #include "general.h"
 
 #include "ccubedisplay.h"
+#include "database.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,8 +22,8 @@ class MainWindow : public QMainWindow
 
     private:
 
-        Ui::MainWindow *ui;
-        CCubeDisplay *ccubeDisplay;
+        Ui::MainWindow *    _ui;
+        Database *          _dataBase;
 
 
     signals:

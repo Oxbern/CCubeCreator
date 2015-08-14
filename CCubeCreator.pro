@@ -39,7 +39,7 @@ FORMS    += GUI/mainwindow.ui \
 RESOURCES += \
     resources.qrc
 
-INCLUDEPATH += Databse \
+INCLUDEPATH += Database \
     GUI
 
 win32:LIBS += -lopengl32

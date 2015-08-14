@@ -12,6 +12,7 @@
 #include <QMouseEvent>
 #include <QVector3D>
 #include <QtMath>
+#include <QAbstractItemModel>
 
 //LEDs
 #define N 9

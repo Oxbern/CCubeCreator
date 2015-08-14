@@ -15,6 +15,7 @@ DbNode::~DbNode()
 void DbNode::addChild(DbNode * node)
 {
     _children.append(node);
+    _children.back()->_parent = this;
 }
 
 DbNode * DbNode::getChild(int index)
@@ -50,4 +51,14 @@ int DbNode::getNumberOfChildren() const
 int DbNode::getIndex() const
 {
     return _parent->_children.indexOf(const_cast<DbNode*>(this));
+}
+
+Qt::ItemFlags DbNode::getFlags() const
+{
+    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
+
+    if (!canHaveChildren())
+        flags |= Qt::ItemNeverHasChildren;
+
+    return flags;
 }

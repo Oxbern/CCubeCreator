@@ -11,7 +11,7 @@ class Pattern : public DbNode
     public:
 
         explicit Pattern(QString const & name = QString(""));
-        virtual ~Pattern();
+        virtual ~Pattern() override;
 
         //LEDs
         void setOn(QVector3D const & point);
