@@ -26,6 +26,11 @@ class MainWindow : public QMainWindow
         Database *          _dataBase;
 
 
+    public slots:
+
+        void contextualMenuTreeView(const QPoint& point);
+
+
     signals:
 
         void displayAboutWindow();

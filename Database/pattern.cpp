@@ -83,3 +83,30 @@ QList<Options::Option*> Pattern::getOptions() const
 {
     return _options;
 }
+
+QJsonObject Pattern::toJson() const
+{
+    QJsonObject pattern = nodeToJson(); //Start with basic stuff
+
+    //Add points
+    QJsonArray jsPoints;
+    for (QVector3D p : _points)
+    {
+        QJsonArray jsPoint;
+        jsPoint.append(p.x());
+        jsPoint.append(p.y());
+        jsPoint.append(p.z());
+        jsPoints.append(jsPoint);
+    }
+    pattern["points"] = jsPoints;
+
+    //Add options
+    QJsonArray jsOptions;
+    for (Options::Option * opt : _options)
+    {
+        jsOptions.append(opt->toJson());
+    }
+    pattern["options"] = jsOptions;
+
+    return pattern;
+}

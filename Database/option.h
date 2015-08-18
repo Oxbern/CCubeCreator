@@ -12,6 +12,8 @@ class Option
 
         Option();
 
+        virtual QJsonObject toJson() const = 0;
+
 
     protected :
 
@@ -21,13 +23,15 @@ class Blink : public Option
 {
     public :
 
-        Blink();
+        explicit Blink(QVector3D const & position = QVector3D(0,0,0), unsigned period_ms = -1);
 
         void setPosition(QVector3D const & position);
         void setPeriod(unsigned period);
 
         QVector3D getPosition() const;
         unsigned getPeriod() const;
+
+        virtual QJsonObject toJson() const override;
 
 
     private :
@@ -41,7 +45,7 @@ class Duplicate : public Option
 {
     public :
 
-        Duplicate();
+        explicit Duplicate(QVector3D const & vector1 = QVector3D(0,0,0), QVector3D const & vector2 = QVector3D(0,0,0), QVector3D const & vector3 = QVector3D(0,0,0));
 
         void setVector1(QVector3D const & vector);
         void setVector2(QVector3D const & vector);
@@ -50,6 +54,8 @@ class Duplicate : public Option
         QVector3D getVector1() const;
         QVector3D getVector2() const;
         QVector3D getVector3() const;
+
+        virtual QJsonObject toJson() const override;
 
 
     private :

@@ -13,6 +13,11 @@
 #include <QVector3D>
 #include <QtMath>
 #include <QAbstractItemModel>
+#include <QMimeData>
+#include <QFile>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 //LEDs
 #define N 9

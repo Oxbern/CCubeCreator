@@ -12,6 +12,9 @@ class Group : public DbNode
 
         explicit Group(QString const & name = QString(""));
 
+        virtual QJsonObject toJson() const override;
+
+
 };
 
 #endif // GROUP_H

@@ -30,6 +30,9 @@ class Pattern : public DbNode
         int getNumberOfOptions() const;
         QList<Options::Option*> getOptions() const;
 
+        //JSON
+        virtual QJsonObject toJson() const override;
+
 
     private :
 

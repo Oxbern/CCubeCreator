@@ -7,9 +7,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _ui->setupUi(this);
 
-    //Manual setup
+    //Treeview setup
     _dataBase = new Database();
     _ui->treeView->setModel(_dataBase);
+    _ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(_ui->treeView,SIGNAL(customContextMenuRequested(const QPoint &)),this,SLOT(contextualMenuTreeView(const QPoint &)));
+    _ui->treeView->setDragEnabled(true);
+    _ui->treeView->setAcceptDrops(true);
+    _ui->treeView->viewport()->setAcceptDrops(true);
+    _ui->treeView->setDropIndicatorShown(true);
+    _ui->treeView->setDragDropMode(QAbstractItemView::InternalMove);
+    _ui->treeView->setSelectionMode(QAbstractItemView::SingleSelection);
 
     //Manual layout stuff
     { //Set the size of the tree
@@ -37,4 +45,26 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete _ui;
+}
+
+void MainWindow::contextualMenuTreeView(const QPoint& point)
+{
+    (void) point;
+    QMenu *menu = new QMenu;
+    menu->addAction("lol");
+    menu->exec(QCursor::pos());
+    /*
+    QModelIndex index = view->currentIndex();
+
+    if(view->rootIndex() == index)
+    {
+       // construct the context menu required for ChildItem items
+    }
+    else
+    {
+       if(view->model()->hasChildren(index)
+       {
+           // construct the context menu required for the RootNode item
+       }
+    }*/
 }

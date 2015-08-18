@@ -15,11 +15,10 @@ Option::Option()
 /* Blink */
 /*********/
 
-Blink::Blink()
- : Option()
+Blink::Blink(QVector3D const & position, unsigned period_ms)
+ : Option(),
+   _position(position), _period(period_ms)
 {
-    _position = QVector3D(0, 0, 0);
-    _period = -1; //unsigned int max
 }
 
 void Blink::setPosition(QVector3D const & position)
@@ -42,16 +41,31 @@ unsigned Blink::getPeriod() const
     return _period;
 }
 
+QJsonObject Blink::toJson() const
+{
+    QJsonObject result;
+
+    result["option"] = "blink";
+
+    QJsonArray vector;
+    vector.append(_position.x());
+    vector.append(_position.y());
+    vector.append(_position.z());
+    result["point"] = vector;
+
+    result["period"] = (int)_period;
+
+    return result;
+}
+
 /*************/
 /* Duplicate */
 /*************/
 
-Duplicate::Duplicate()
- : Option()
+Duplicate::Duplicate(QVector3D const & vector1, QVector3D const & vector2, QVector3D const & vector3)
+ : Option(),
+   _vec1(vector1), _vec2(vector2), _vec3(vector3)
 {
-    _vec1 = QVector3D(0, 0, 0);
-    _vec2 = QVector3D(0, 0, 0);
-    _vec3 = QVector3D(0, 0, 0);
 }
 
 void Duplicate::setVector1(QVector3D const & vector)
@@ -82,4 +96,31 @@ QVector3D Duplicate::getVector2() const
 QVector3D Duplicate::getVector3() const
 {
     return _vec3;
+}
+
+QJsonObject Duplicate::toJson() const
+{
+    QJsonObject result;
+
+    result["option"] = "duplicate";
+
+    QJsonArray vector1;
+    vector1.append(_vec1.x());
+    vector1.append(_vec1.y());
+    vector1.append(_vec1.z());
+    result["i"] = vector1;
+
+    QJsonArray vector2;
+    vector2.append(_vec2.x());
+    vector2.append(_vec2.y());
+    vector2.append(_vec2.z());
+    result["j"] = vector2;
+
+    QJsonArray vector3;
+    vector3.append(_vec3.x());
+    vector3.append(_vec3.y());
+    vector3.append(_vec3.z());
+    result["k"] = vector3;
+
+    return result;
 }
