@@ -31,7 +31,8 @@ class Pattern : public DbNode
         QList<Options::Option*> getOptions() const;
 
         //JSON
-        virtual QJsonObject toJson() const override;
+        virtual QJsonObject toJson(bool asRoot = false) const override;
+        virtual bool setFromJson(QJsonObject const & json) override;
 
 
     private :

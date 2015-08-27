@@ -25,6 +25,23 @@ class MainWindow : public QMainWindow
         Ui::MainWindow *    _ui;
         Database *          _dataBase;
 
+        //Actions for the undo stack
+        QAction * addNode;
+        QAction * deleteNode;
+        QAction * moveNode;
+        QAction * renameNode;
+
+        QAction * setLeds;
+        QAction * changeImagePath;
+        QAction * changeDescription;
+
+        QAction * addOption;
+        QAction * deleteOption;
+        QAction * changeOption; //TODO
+
+        QAction * undoAction;
+        QAction * redoAction;
+
 
     public slots:
 

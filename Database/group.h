@@ -12,8 +12,8 @@ class Group : public DbNode
 
         explicit Group(QString const & name = QString(""));
 
-        virtual QJsonObject toJson() const override;
-
+        virtual QJsonObject toJson(bool asRoot = false) const override;
+        virtual bool setFromJson(QJsonObject const & json) override;
 
 };
 

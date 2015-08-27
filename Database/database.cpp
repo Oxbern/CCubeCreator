@@ -4,7 +4,9 @@ Database::Database()
  : _root(new Group("New database"))
 {
     //Debug
-    Group * g2 = new Group("new group lol");
+    _root->load("/home/pierre/test.txt");
+
+    /*Group * g2 = new Group("new group lol");
     Pattern * p = new Pattern("Pattern testttt");
     _root->addChild(g2);
     _root->addChild(p);
@@ -21,8 +23,8 @@ Database::Database()
     Options::Blink * opt = new Options::Blink(QVector3D(1, 3, 4), 500);
     p2->addOption(opt);
 
-    _root->save("/home/pierre/test.txt");
-    exit(0);
+    _root->save("/home/pierre/test.txt");*/
+    //exit(0);
 }
 
 Database::~Database()
@@ -96,10 +98,9 @@ QVariant Database::data(const QModelIndex & index, int role) const
     {
         return static_cast<DbNode*>(getItem(index))->getName(); //When the user edits the name, he doesn't want the field to reset!
     }
-    else if (role == Qt::UserRole) //Used to store the pointer for drag and drop operations
+    else if (role == Qt::UserRole) //JSON
     {
-        DEBUG_MSG("Returned pointer " << getItem(index));
-        return QVariant(QString("0x%1").arg((quintptr)getItem(index), QT_POINTER_SIZE * 2, 16, QChar('0')));
+        return QVariant(getItem(index)->toJson());
     }
     else
         return QVariant();
@@ -250,9 +251,8 @@ QMimeData * Database::mimeData(const QModelIndexList & indexes) const
     {
         if (index.isValid())
         {
-            //Add pointer
-            QString text = data(index, Qt::UserRole).toString();
-            stream << text;
+            //Insert node json inside mime
+            stream << data(index, Qt::UserRole).toString();
         }
     }
 

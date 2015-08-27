@@ -1,6 +1,10 @@
 #ifndef GENERAL_H
 #define GENERAL_H
 
+//Version
+#define CCUBE_CREATOR_VERSION 1.0
+#define CCUBE_DDB_VERSION 1.0
+
 //Includes
 #include <QDialog>
 #include <QGLWidget>

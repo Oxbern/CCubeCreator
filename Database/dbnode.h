@@ -3,11 +3,19 @@
 
 #include "general.h"
 
+enum class DbNodeType
+{
+    Group,
+    Pattern,
+    Unknown
+};
+
 class DbNode
 {
     public :
 
         explicit DbNode(QString const & name = QString(""), bool canHaveChildren = true);
+
         virtual ~DbNode();
 
         void addChild(DbNode * node, int index = -1);
@@ -27,9 +35,13 @@ class DbNode
         int getNumberOfChildren() const;
         int getIndex() const;
 
-        QJsonObject nodeToJson() const;
-        virtual QJsonObject toJson() const = 0;
+        QJsonObject nodeToJson(bool asRoot = false) const;
+        virtual QJsonObject toJson(bool asRoot = false) const = 0;
         bool save(QString const & path) const;
+
+        DbNodeType getObjectType(QJsonObject const & json) const;
+        virtual bool setFromJson(QJsonObject const & json) = 0;
+        bool load(QString const & path);
 
 
     protected :

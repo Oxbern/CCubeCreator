@@ -132,12 +132,16 @@ int DbNode::getIndex() const
     return _parent->_children.indexOf(const_cast<DbNode*>(this));
 }
 
-QJsonObject DbNode::nodeToJson() const
+QJsonObject DbNode::nodeToJson(bool asRoot) const
 {
     QJsonObject node;
 
     //Name
     node["name"] = _name;
+
+    //Version (if root)
+    if (asRoot)
+        node["version"] = QString::number((double)CCUBE_DDB_VERSION);
 
     //Type
     if (_canHaveChildren)
@@ -165,7 +169,7 @@ QJsonObject DbNode::nodeToJson() const
 
 bool DbNode::save(QString const & path) const
 {
-    QJsonObject object = this->toJson();
+    QJsonObject object = this->toJson(true);
     QJsonDocument doc(object);
 
     QFile file(path);
@@ -179,4 +183,59 @@ bool DbNode::save(QString const & path) const
     file.write(doc.toJson());
 
     return true;
+}
+
+DbNodeType DbNode::getObjectType(QJsonObject const & json) const
+{
+    if (json["type"] == QJsonValue::Undefined)
+    {
+        ERROR_MSG("Cannot find object type: database/pattern file is probably corrupted");
+        return DbNodeType::Unknown;
+    }
+
+    if (json["type"].toString() == QString("group"))
+    {
+        return DbNodeType::Group;
+    }
+    else if (json["type"].toString() == QString("pattern"))
+    {
+        return DbNodeType::Pattern;
+    }
+    else
+        return DbNodeType::Unknown;
+}
+
+bool DbNode::load(QString const & path)
+{
+    /* Note:
+     * Before calling this function, you need to make sure you're calling it
+     * from a group if the file is a database (.ccdb)
+     * or that you're calling it from a pattern if the file a single pattern (.ccpat).
+     */
+
+    QFile file(path);
+
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        ERROR_MSG("Cannot open file (r): " << path);
+        return false;
+    }
+
+    QByteArray data = file.readAll();
+    QJsonDocument doc(QJsonDocument::fromJson(data));
+
+    //Verify version
+    if (doc.object()["version"] == QJsonValue::Undefined)
+    {
+        ERROR_MSG("The file " << path << " doesn't contain a version number");
+        return false;
+    }
+    const float version = doc.object()["version"].toString().toFloat();
+    if (version > CCUBE_DDB_VERSION)
+    {
+        ERROR_MSG("The file " << path << " uses a newer database version. Please upgrade CCube Creator.");
+    }
+
+    //Call parse function
+    return setFromJson(doc.object());
 }

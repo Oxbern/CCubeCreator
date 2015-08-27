@@ -6,13 +6,24 @@
 namespace Options
 {
 
+enum class Type
+{
+    Blink,
+    Duplicate,
+    Unknown
+};
+
+Type getOptionType(QJsonObject const & json);
+
 class Option
 {
     public :
 
         Option();
+        virtual ~Option();
 
         virtual QJsonObject toJson() const = 0;
+        virtual bool setFromJson(QJsonObject const & json) = 0;
 
 
     protected :
@@ -24,6 +35,7 @@ class Blink : public Option
     public :
 
         explicit Blink(QVector3D const & position = QVector3D(0,0,0), unsigned period_ms = -1);
+        virtual ~Blink() override;
 
         void setPosition(QVector3D const & position);
         void setPeriod(unsigned period);
@@ -32,6 +44,7 @@ class Blink : public Option
         unsigned getPeriod() const;
 
         virtual QJsonObject toJson() const override;
+        virtual bool setFromJson(QJsonObject const & json);
 
 
     private :
@@ -46,6 +59,7 @@ class Duplicate : public Option
     public :
 
         explicit Duplicate(QVector3D const & vector1 = QVector3D(0,0,0), QVector3D const & vector2 = QVector3D(0,0,0), QVector3D const & vector3 = QVector3D(0,0,0));
+        virtual ~Duplicate() override;
 
         void setVector1(QVector3D const & vector);
         void setVector2(QVector3D const & vector);
@@ -56,6 +70,7 @@ class Duplicate : public Option
         QVector3D getVector3() const;
 
         virtual QJsonObject toJson() const override;
+        virtual bool setFromJson(QJsonObject const & json);
 
 
     private :
