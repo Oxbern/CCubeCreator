@@ -22,6 +22,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QUndoStack>
 
 //LEDs
 #define N 9

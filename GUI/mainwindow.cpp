@@ -7,8 +7,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     _ui->setupUi(this);
 
+    //Undo/redo
+    _undoStack = new QUndoStack(this);
+    createUndoActions();
+
     //Treeview setup
-    _dataBase = new Database();
+    _dataBase = new Database(_undoStack);
     _ui->treeView->setModel(_dataBase);
     _ui->treeView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(_ui->treeView,SIGNAL(customContextMenuRequested(const QPoint &)),this,SLOT(contextualMenuTreeView(const QPoint &)));
@@ -45,6 +49,19 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete _ui;
+    delete _undoStack;
+}
+
+void MainWindow::createUndoActions()
+{
+    //Nodes
+    _actionAddGroup = new QAction(tr("Add group"), this);
+    //_actionAddGroup->setShortcut(tr("Del"));
+    connect(_actionAddGroup, SIGNAL(triggered()), this, SLOT(deleteItem()));
+
+    //Undo/redo
+    connect(_ui->actionUndo, SIGNAL(triggered()), _undoStack, SLOT(undo()));
+    connect(_ui->actionRedo, SIGNAL(triggered()), _undoStack, SLOT(redo()));
 }
 
 void MainWindow::contextualMenuTreeView(const QPoint& point)

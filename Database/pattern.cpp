@@ -199,3 +199,8 @@ bool Pattern::setFromJson(QJsonObject const & json)
 
     return true;
 }
+
+DbNodeType Pattern::getType() const
+{
+    return DbNodeType::Pattern;
+}

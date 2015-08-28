@@ -71,3 +71,9 @@ bool Group::setFromJson(QJsonObject const & json)
 
     return true;
 }
+
+DbNodeType Group::getType() const
+{
+    return DbNodeType::Group;
+}
+

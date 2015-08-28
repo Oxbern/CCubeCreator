@@ -34,6 +34,8 @@ class Pattern : public DbNode
         virtual QJsonObject toJson(bool asRoot = false) const override;
         virtual bool setFromJson(QJsonObject const & json) override;
 
+        virtual DbNodeType getType() const override;
+
 
     private :
 

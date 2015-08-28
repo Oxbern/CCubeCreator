@@ -1,7 +1,7 @@
 #include "database.h"
 
-Database::Database()
- : _root(new Group("New database"))
+Database::Database(QUndoStack * undoStack)
+ : _root(new Group("New database")), _undoStack(undoStack)
 {
     //Debug
     _root->load("/home/pierre/test.txt");
@@ -136,7 +136,7 @@ bool Database::setData(const QModelIndex & index, const QVariant & value, int ro
 
     if (role == Qt::EditRole) //Set name
     {
-        static_cast<DbNode*>(getItem(index))->setName(value.toString());
+        _undoStack->push(new Commands::RenameNode(index, value.toString(), this));
     }
     else if (role == Qt::UserRole) //Set pointer
     {
@@ -152,6 +152,7 @@ bool Database::setData(const QModelIndex & index, const QVariant & value, int ro
 
         DEBUG_MSG("Index " << index << " node " << getItem(index) << getItem(index)->getName());
         DEBUG_MSG("Index has " << getItem(parent(index)) << getItem(parent(index))->getNumberOfChildren() << "children");
+        emitDataChanged(index);
     }
     else
     {
@@ -262,14 +263,21 @@ QMimeData * Database::mimeData(const QModelIndexList & indexes) const
 
 bool Database::canDropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) const
 {
-    Q_UNUSED(action);
     Q_UNUSED(row);
-    Q_UNUSED(parent);
+    Q_UNUSED(column);
 
+    //Check mime type
     if (!data->hasFormat("application/vnd.text.list"))
         return false;
 
-    if (column > 0)
+    //Check action type
+    if (action != Qt::MoveAction)
+        return false;
+
+    //Check destination (must not be a pattern)
+    QModelIndex destination = parent; //Weird shit
+
+    if (getItem(destination)->getType() != DbNodeType::Group)
         return false;
 
     return true;
@@ -290,22 +298,22 @@ bool Database::dropMimeData(const QMimeData * data, Qt::DropAction action, int r
 
     QByteArray encodedData = data->data("application/vnd.text.list");
     QDataStream stream(&encodedData, QIODevice::ReadOnly);
-    QList<QVariant> nodesToInsert;
+    QList<QJsonObject> nodesToInsert;
 
     while (!stream.atEnd())
     {
         QString text;
         stream >> text;
-        nodesToInsert.append(QVariant(text));
+        nodesToInsert.append(QVariant(text).toJsonObject());
     }
 
     int number = 0;
-    foreach (QVariant node, nodesToInsert)
+    foreach (QJsonObject node, nodesToInsert)
     {
         insertRow(row + number, parent);
         QModelIndex idx = index(row + number, 0, parent);
         DEBUG_MSG("Row is " << row << " and idx " << idx);
-        setData(idx, node, Qt::UserRole);
+        //setData(idx, node, Qt::UserRole);
         number++;
     }
 
@@ -321,4 +329,9 @@ DbNode * Database::getItem(QModelIndex const & index) const
             return item;
     }
     return _root;
+}
+
+void Database::emitDataChanged(QModelIndex const & index)
+{
+    emit dataChanged(index, index);
 }

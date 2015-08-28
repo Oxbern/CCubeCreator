@@ -3,6 +3,7 @@
 
 #include "general.h"
 
+#include "commands.h"
 #include "dbnode.h"
 #include "group.h"
 #include "pattern.h"
@@ -11,7 +12,7 @@ class Database : public QAbstractItemModel
 {
     public :
 
-        explicit Database();
+        explicit Database(QUndoStack * undoStack);
         virtual ~Database() override;
 
         //QAbstractItemModel basics
@@ -29,7 +30,7 @@ class Database : public QAbstractItemModel
         virtual bool                setHeaderData(int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole) override;
         virtual bool                insertRows(int row, int count, const QModelIndex & parent = QModelIndex()) override;
         virtual bool                moveRows(const QModelIndex & sourceParent, int sourceRow, int count, const QModelIndex & destinationParent, int destinationChild) override;
-        virtual bool                removeRows(int row, int count, const QModelIndex & parent = QModelIndex()) override;
+        virtual bool                removeRows(int row, int count, const QModelIndex & parent) override;
 
         //QAbstractItemModel drag and drop
         virtual Qt::DropActions 	supportedDragActions() const override;
@@ -39,7 +40,8 @@ class Database : public QAbstractItemModel
         virtual bool                canDropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) const override;
         virtual bool                dropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) override;
 
-/*        virtual QModelIndex         buddy(const QModelIndex & index) const override;
+        //Functions that could be reimplemented
+/*      virtual QModelIndex         buddy(const QModelIndex & index) const override;
         virtual bool                canFetchMore(const QModelIndex & parent) const override;
         virtual void                fetchMore(const QModelIndex & parent) override;
         virtual bool                insertColumns(int column, int count, const QModelIndex & parent = QModelIndex()) override;
@@ -56,6 +58,7 @@ class Database : public QAbstractItemModel
 
         //Custom useful additions to the model class
         DbNode * getItem(QModelIndex const & index) const;
+        void emitDataChanged(QModelIndex const & index);
 
         //Specific stuff for the CCube
         //void
@@ -64,6 +67,7 @@ class Database : public QAbstractItemModel
     private :
 
         DbNode* _root;
+        QUndoStack * _undoStack;
 
 
     public slots :

@@ -185,7 +185,7 @@ bool DbNode::save(QString const & path) const
     return true;
 }
 
-DbNodeType DbNode::getObjectType(QJsonObject const & json) const
+DbNodeType DbNode::getObjectType(QJsonObject const & json)
 {
     if (json["type"] == QJsonValue::Undefined)
     {

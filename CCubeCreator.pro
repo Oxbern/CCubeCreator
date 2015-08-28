@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     Database/group.cpp \
     Database/database.cpp \
     Database/option.cpp \
-    Database/dbnode.cpp
+    Database/dbnode.cpp \
+    Database/commands.cpp
 
 HEADERS  += GUI/mainwindow.h \
     GUI/aboutwindow.h \
@@ -31,7 +32,8 @@ HEADERS  += GUI/mainwindow.h \
     Database/group.h \
     Database/database.h \
     Database/option.h \
-    Database/dbnode.h
+    Database/dbnode.h \
+    Database/commands.h
 
 FORMS    += GUI/mainwindow.ui \
     GUI/aboutwindow.ui

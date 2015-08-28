@@ -39,9 +39,11 @@ class DbNode
         virtual QJsonObject toJson(bool asRoot = false) const = 0;
         bool save(QString const & path) const;
 
-        DbNodeType getObjectType(QJsonObject const & json) const;
+        static DbNodeType getObjectType(QJsonObject const & json);
         virtual bool setFromJson(QJsonObject const & json) = 0;
         bool load(QString const & path);
+
+        virtual DbNodeType getType() const = 0;
 
 
     protected :
