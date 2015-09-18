@@ -45,11 +45,16 @@ class DbNode
 
         virtual DbNodeType getType() const = 0;
 
+        virtual void setModified();
+        void setUnmodified();
+        bool wasModified() const;
+
 
     protected :
 
         QString _name;
         bool _canHaveChildren;
+        bool _modified;
 
         DbNode* _parent;
         QList<DbNode*> _children;

@@ -13,6 +13,8 @@ class Pattern : public DbNode
         explicit Pattern(QString const & name = QString(""));
         virtual ~Pattern() override;
 
+        void clear();
+
         //LEDs
         void setOn(QVector3D const & point);
         void setOff(QVector3D const & point);
@@ -25,10 +27,17 @@ class Pattern : public DbNode
         //Options
         void addOption(Options::Option * option);
         void removeOption(int index);
+        void setOption(int index, QJsonObject const & json);
 
         bool optionExists(Options::Option * option) const;
         int getNumberOfOptions() const;
-        QList<Options::Option*> getOptions() const;
+        Options::Option const * getOption(int index) const;
+
+        //Description and thumbnail
+        void setDescription(QString const & description);
+        void setImage(QImage const & image);
+        QString getDescription() const;
+        QImage getImage() const;
 
         //JSON
         virtual QJsonObject toJson(bool asRoot = false) const override;
@@ -41,6 +50,8 @@ class Pattern : public DbNode
 
         QList<QVector3D> _points;
         QList<Options::Option*> _options;
+        QString _description;
+        QImage _thumbnail;
 
 };
 

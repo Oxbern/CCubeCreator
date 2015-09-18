@@ -11,16 +11,17 @@ Pattern::Pattern(QString const & name)
 
 Pattern::~Pattern()
 {
-    qDeleteAll(_options);
+    if (!_options.empty())
+        qDeleteAll(_options);
 }
 
 void Pattern::clear()
 {
     _points.clear();
-    qDeleteAll(_options);
-    _options.clear();
     _description.clear();
     _thumbnail = QImage();
+    if (!_options.empty())
+        qDeleteAll(_options);
 }
 
 //LEDs
@@ -69,6 +70,8 @@ void Pattern::addOption(Options::Option * option)
 {
     DEBUG_MSG("Added option to " << this);
     _options.append(option);
+    DEBUG_MSG("Option 0 is " << _options[0]);
+    DEBUG_MSG("Text is " << _options[0]->toText());
 }
 
 void Pattern::removeOption(int index)
@@ -191,8 +194,8 @@ bool Pattern::setFromJson(QJsonObject const & json)
         return false;
     }
 
-    const QByteArray base64 = QByteArray(json["image"].toString().toStdString().c_str(), json["image"].toString().size());
-    this->_thumbnail.loadFromData(QByteArray::fromBase64(base64), "PNG");
+    const QString base64 = json["image"].toString();
+    this->_thumbnail.loadFromData(QByteArray(base64.toStdString().c_str()), "PNG");
 
     //Get points
     if (json["points"] == QJsonValue::Undefined)
@@ -228,8 +231,8 @@ bool Pattern::setFromJson(QJsonObject const & json)
     }
 
     QJsonArray options = json["options"].toArray();
-    qDeleteAll(_options);
-    _options.clear();
+    if (!_options.empty())
+        qDeleteAll(_options);
 
     for (int i=0 ; i<options.size() ; i++)
     {
@@ -238,10 +241,12 @@ bool Pattern::setFromJson(QJsonObject const & json)
         Options::Option * opt = nullptr;
         if (optionType == Options::Type::Blink)
         {
+            opt = static_cast<Options::Blink*>(opt);
             opt = new Options::Blink();
         }
         else if (optionType == Options::Type::Duplicate)
         {
+            opt = static_cast<Options::Duplicate*>(opt);
             opt = new Options::Duplicate();
         }
         else

@@ -1,0 +1,1 @@
+pngcrush_1_7_86_w64.exe -ow -rem allb file.png

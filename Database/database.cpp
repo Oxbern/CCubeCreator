@@ -1,30 +1,10 @@
 #include "database.h"
 
 Database::Database(QUndoStack * undoStack)
- : _root(new Group("New database")), _undoStack(undoStack)
+ : _root(new Root("New database")), _undoStack(undoStack)
 {
-    //Debug
-    _root->load("/home/pierre/test.txt");
-
-    /*Group * g2 = new Group("new group lol");
-    Pattern * p = new Pattern("Pattern testttt");
-    _root->addChild(g2);
-    _root->addChild(p);
-    Group * g3 = new Group("woiwowowow");
-    Pattern * p2 = new Pattern("much pattern");
-    Group * g4 = new Group("such group");
-    g2->addChild(g3);
-    g2->addChild(g4);
-    g3->addChild(p2);
-
-    p->setOn(QVector3D(2,2,2));
-    p->setOn(QVector3D(2,4,2));
-
-    Options::Blink * opt = new Options::Blink(QVector3D(1, 3, 4), 500);
-    p2->addOption(opt);
-
-    _root->save("/home/pierre/test.txt");*/
-    //exit(0);
+    connectRoot();
+    _dragAndDropSourceIndexes.clear();
 }
 
 Database::~Database()
@@ -88,7 +68,8 @@ QVariant Database::data(const QModelIndex & index, int role) const
 
     if (role == Qt::DisplayRole)
     {
-        return static_cast<DbNode*>(getItem(index))->getName();
+        const QString suffix = static_cast<DbNode*>(getItem(index))->wasModified() ? QString(" *") : QString("");
+        return static_cast<DbNode*>(getItem(index))->getName() + suffix;
     }
     else if (role == Qt::DecorationRole)
     {
@@ -98,9 +79,13 @@ QVariant Database::data(const QModelIndex & index, int role) const
     {
         return static_cast<DbNode*>(getItem(index))->getName(); //When the user edits the name, he doesn't want the field to reset!
     }
-    else if (role == Qt::UserRole) //JSON
+    else if (role == Qt::ContentRole) //json
     {
         return QVariant(getItem(index)->toJson());
+    }
+    else if (role == Qt::TypeRole) //type
+    {
+        return QVariant((int)getItem(index)->getType());
     }
     else
         return QVariant();
@@ -136,23 +121,15 @@ bool Database::setData(const QModelIndex & index, const QVariant & value, int ro
 
     if (role == Qt::EditRole) //Set name
     {
-        _undoStack->push(new Commands::RenameNode(index, value.toString(), this));
+        _undoStack->push(new Commands::RenameNode(index, value, this));
     }
-    else if (role == Qt::UserRole) //Set pointer
+    else if (role == Qt::ContentRole) //Set content from json
     {
-        DEBUG_MSG("Index has " << getItem(parent(index)) << getItem(parent(index))->getNumberOfChildren() << "children");
-        bool ok;
-        DbNode * pointer = (DbNode*)(value.toString().toLong(&ok, 16));
-        DEBUG_MSG("Got pointer " << pointer);
-        DEBUG_MSG("Child index of parent " << getItem(parent(index)) << getItem(parent(index))->getName() << " is " << getItem(index)->getIndex());
-
-        DEBUG_MSG("Index " << index << " node " << getItem(index) << getItem(index)->getName());
-
-        getItem(parent(index))->replaceChild(getItem(index)->getIndex(), pointer);
-
-        DEBUG_MSG("Index " << index << " node " << getItem(index) << getItem(index)->getName());
-        DEBUG_MSG("Index has " << getItem(parent(index)) << getItem(parent(index))->getNumberOfChildren() << "children");
-        emitDataChanged(index);
+        _undoStack->push(new Commands::NodeSetContentFromJson(index, value, this));
+    }
+    else if (role == Qt::TypeRole) //Set node type
+    {
+        _undoStack->push(new Commands::SetNodeType(index, value, this));
     }
     else
     {
@@ -179,12 +156,12 @@ bool Database::insertRows(int row, int count, const QModelIndex & parent)
     beginInsertRows(parent, row, row + count - 1);
 
     DbNode * parentItem = getItem(parent);
-    DEBUG_MSG("Parent has " << parentItem->getNumberOfChildren() << "children");
+
     for (int i=0 ; i<count ; i++)
     {
-        parentItem->addChild(new Group("new node"), row + i);
+        parentItem->addChild(new Group("New group"), row + i);
     }
-    DEBUG_MSG("Parent has " << parentItem->getNumberOfChildren() << "children");
+
     endInsertRows();
 
     return true;
@@ -243,21 +220,17 @@ QStringList Database::mimeTypes() const
 
 QMimeData * Database::mimeData(const QModelIndexList & indexes) const
 {
-    QMimeData * mimeData = new QMimeData();
-
-    QByteArray encodedData;
-    QDataStream stream(&encodedData, QIODevice::WriteOnly);
+    QList<QJsonObject> json;
 
     foreach (QModelIndex const & index, indexes)
     {
         if (index.isValid())
-        {
             //Insert node json inside mime
-            stream << data(index, Qt::UserRole).toString();
-        }
+            json.append(data(index, Qt::ContentRole).toJsonObject());
     }
 
-    mimeData->setData("application/vnd.text.list", encodedData);
+    FakeMimeData * mimeData = new FakeMimeData(indexes, json);
+
     return mimeData;
 }
 
@@ -267,7 +240,7 @@ bool Database::canDropMimeData(const QMimeData * data, Qt::DropAction action, in
     Q_UNUSED(column);
 
     //Check mime type
-    if (!data->hasFormat("application/vnd.text.list"))
+    if (data->text() != QString("Oxbern::CCube"))
         return false;
 
     //Check action type
@@ -283,38 +256,20 @@ bool Database::canDropMimeData(const QMimeData * data, Qt::DropAction action, in
     return true;
 }
 
-bool Database::dropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent)
+bool Database::dropMimeData(const QMimeData * mime, Qt::DropAction action, int row, int column, const QModelIndex & parent)
 {
-    if (!canDropMimeData(data, action, row, column, parent))
+    if (!canDropMimeData(mime, action, row, column, parent))
         return false;
-
-    if (action == Qt::IgnoreAction)
-        return true;
 
     if (row == -1)
     {
         row = rowCount(parent);
     }
 
-    QByteArray encodedData = data->data("application/vnd.text.list");
-    QDataStream stream(&encodedData, QIODevice::ReadOnly);
-    QList<QJsonObject> nodesToInsert;
-
-    while (!stream.atEnd())
+    const FakeMimeData * fakeMime = dynamic_cast<FakeMimeData const *>(mime);
+    for (int i=0 ; i<fakeMime->size() ; i++)
     {
-        QString text;
-        stream >> text;
-        nodesToInsert.append(QVariant(text).toJsonObject());
-    }
-
-    int number = 0;
-    foreach (QJsonObject node, nodesToInsert)
-    {
-        insertRow(row + number, parent);
-        QModelIndex idx = index(row + number, 0, parent);
-        DEBUG_MSG("Row is " << row << " and idx " << idx);
-        //setData(idx, node, Qt::UserRole);
-        number++;
+        _undoStack->push(new Commands::MoveNode(fakeMime->indexes()[i], row + i, parent, fakeMime->data()[i], this, true));
     }
 
     return true;
@@ -331,7 +286,79 @@ DbNode * Database::getItem(QModelIndex const & index) const
     return _root;
 }
 
+bool Database::insertRowsType(DbNodeType type, int row, int count, const QModelIndex & parent)
+{
+    beginInsertRows(parent, row, row + count - 1);
+
+    DbNode * parentItem = getItem(parent);
+
+    if (type == DbNodeType::Group)
+    {
+        for (int i=0 ; i<count ; i++)
+            parentItem->addChild(new Group("New group"), row + i);
+    }
+    else if (type == DbNodeType::Pattern)
+    {
+        for (int i=0 ; i<count ; i++)
+            parentItem->addChild(new Pattern("New pattern"), row + i);
+    }
+    else
+    {
+        ERROR_MSG("Cannot insert unknown object");
+    }
+
+    endInsertRows();
+
+    return true;
+}
+
 void Database::emitDataChanged(QModelIndex const & index)
 {
     emit dataChanged(index, index);
+}
+
+void Database::reset()
+{
+    beginResetModel();
+
+    _undoStack->push(new Commands::ClearDatabase(this));
+
+    endResetModel();
+}
+
+void Database::setUnmodified()
+{
+    _root->setUnmodified();
+}
+
+QString Database::getRootName() const
+{
+    return _root->getName();
+}
+
+void Database::setRootName(QString const & newName)
+{
+    _root->setName(newName);
+}
+
+bool Database::save(QString const & path)
+{
+    return _root->save(path);
+}
+
+bool Database::load(QString const & path)
+{
+    const bool result = _root->load(path);
+    emit layoutChanged();
+    return result;
+}
+
+void Database::connectRoot()
+{
+    connect(_root, SIGNAL(modified()), this, SIGNAL(modified()));
+}
+
+void Database::makeViewSelectIndex(QModelIndex const & index)
+{
+    emit select(index);
 }

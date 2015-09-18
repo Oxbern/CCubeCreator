@@ -8,9 +8,9 @@ namespace Options
 
 enum class Type
 {
+    Unknown,
     Blink,
-    Duplicate,
-    Unknown
+    Duplicate
 };
 
 Type getOptionType(QJsonObject const & json);
@@ -24,6 +24,8 @@ class Option
 
         virtual QJsonObject toJson() const = 0;
         virtual bool setFromJson(QJsonObject const & json) = 0;
+
+        virtual QString toText() const = 0;
 
 
     protected :
@@ -45,6 +47,8 @@ class Blink : public Option
 
         virtual QJsonObject toJson() const override;
         virtual bool setFromJson(QJsonObject const & json);
+
+        virtual QString toText() const override;
 
 
     private :
@@ -71,6 +75,8 @@ class Duplicate : public Option
 
         virtual QJsonObject toJson() const override;
         virtual bool setFromJson(QJsonObject const & json);
+
+        virtual QString toText() const override;
 
 
     private :

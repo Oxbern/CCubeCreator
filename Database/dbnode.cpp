@@ -5,6 +5,7 @@ DbNode::DbNode(QString const & name, bool canHaveChildren)
 {
     _parent = nullptr;
     _children.clear();
+    setUnmodified();
 }
 
 DbNode::~DbNode()
@@ -112,9 +113,9 @@ Qt::ItemFlags DbNode::getFlags() const
 QString DbNode::getIconPath() const
 {
     if (canHaveChildren())
-        return QString(":/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/edit-clear.png");
+        return QString(":/icons/Icons/ccdb.png");
     else
-        return QString(":/icons/Icons/SnowIsh-1.0_PNG/128x128/actions/edit-redo.png");
+        return QString(":/icons/Icons/ccpat.png");
 }
 
 bool DbNode::canHaveChildren() const
@@ -238,4 +239,22 @@ bool DbNode::load(QString const & path)
 
     //Call parse function
     return setFromJson(doc.object());
+}
+
+void DbNode::setModified()
+{
+    _modified = true;
+    _parent->setModified();
+}
+
+void DbNode::setUnmodified()
+{
+    _modified = false;
+    for (int i=0 ; i<_children.size() ; i++)
+        _children[i]->setUnmodified();
+}
+
+bool DbNode::wasModified() const
+{
+    return _modified;
 }

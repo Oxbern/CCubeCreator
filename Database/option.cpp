@@ -114,6 +114,19 @@ bool Blink::setFromJson(QJsonObject const & json)
     return true;
 }
 
+QString Blink::toText() const
+{
+    return QString("Blink [(")
+            + QString::number(_position.x())
+            + QString(",")
+            + QString::number(_position.y())
+            + QString(",")
+            + QString::number(_position.z())
+            + QString(") ; ")
+            + QString::number(_period)
+            + QString(" ms]");
+}
+
 /*************/
 /* Duplicate */
 /*************/
@@ -224,4 +237,27 @@ bool Duplicate::setFromJson(QJsonObject const & json)
     _vec3.setZ(json["k"].toArray()[2].toInt());
 
     return true;
+}
+
+QString Duplicate::toText() const
+{
+    return QString("Duplicate [(")
+            + QString::number(_vec1.x())
+            + QString(",")
+            + QString::number(_vec1.y())
+            + QString(",")
+            + QString::number(_vec1.z())
+            + QString(") ; (")
+            + QString::number(_vec2.x())
+            + QString(",")
+            + QString::number(_vec2.y())
+            + QString(",")
+            + QString::number(_vec2.z())
+            + QString(") ; (")
+            + QString::number(_vec3.x())
+            + QString(",")
+            + QString::number(_vec3.y())
+            + QString(",")
+            + QString::number(_vec3.z())
+            + QString(")]");
 }

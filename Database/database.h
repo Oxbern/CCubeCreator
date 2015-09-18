@@ -6,10 +6,43 @@
 #include "commands.h"
 #include "dbnode.h"
 #include "group.h"
+#include "root.h"
 #include "pattern.h"
+
+namespace Qt
+{
+    enum ItemDataRoleAdditions
+    {
+        ContentRole = 0x0101,           //Json
+        TypeRole    = 0x0102            //DbNodeType
+    };
+}
+
+class FakeMimeData : public QMimeData //Simple useful class to bypass drag and drop painful mime integration.
+{
+    public :
+
+        FakeMimeData(QModelIndexList const & indexes, QList<QJsonObject> const & data)
+         : QMimeData(), _indexes(indexes), _data(data)
+        { this->setText("Oxbern::CCube"); }
+
+        QModelIndexList indexes() const { return _indexes; }
+        QList<QJsonObject> data() const { return _data; }
+        int size() const { return _indexes.size(); }
+
+    private :
+
+        QModelIndexList _indexes;
+        QList<QJsonObject> _data;
+
+};
 
 class Database : public QAbstractItemModel
 {
+    Q_OBJECT
+
+    friend class Commands::ClearDatabase;
+
     public :
 
         explicit Database(QUndoStack * undoStack);
@@ -58,7 +91,14 @@ class Database : public QAbstractItemModel
 
         //Custom useful additions to the model class
         DbNode * getItem(QModelIndex const & index) const;
+        bool insertRowsType(DbNodeType type, int row, int count, const QModelIndex & parent = QModelIndex());
         void emitDataChanged(QModelIndex const & index);
+        void reset();
+        QString getRootName() const;
+        void setRootName(QString const & newName);
+        bool save(QString const & path);
+        bool load(QString const & path);
+        void makeViewSelectIndex(QModelIndex const & index);
 
         //Specific stuff for the CCube
         //void
@@ -66,8 +106,12 @@ class Database : public QAbstractItemModel
 
     private :
 
-        DbNode* _root;
+        Root * _root;
         QUndoStack * _undoStack;
+
+        QModelIndexList _dragAndDropSourceIndexes;
+
+        void connectRoot();
 
 
     public slots :
@@ -75,6 +119,13 @@ class Database : public QAbstractItemModel
         //QAbstractItemModel
         //virtual void revert() override;
         //virtual bool submit() override;
+        void setUnmodified();
+
+
+    signals :
+
+        void modified();
+        void select(QModelIndex const & index);
 
 };
 

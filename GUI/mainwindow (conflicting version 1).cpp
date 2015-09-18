@@ -6,7 +6,6 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui(new Ui::MainWindow)
 {
     _ui->setupUi(this);
-    _ui->ccubeDisplay->setMainWindow(this);
     _clipBoard = QJsonObject();
     _modified = false;
 
@@ -14,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     _undoStack = new QUndoStack(this);
     connect(_ui->actionUndo, SIGNAL(triggered()), _undoStack, SLOT(undo()));
     connect(_ui->actionRedo, SIGNAL(triggered()), _undoStack, SLOT(redo()));
-    _ui->ccubeDisplay->setUndoStack(_undoStack);
 
     _undoView = new QUndoView(_undoStack);
     _undoView->setWindowTitle(tr("Command List"));
@@ -98,12 +96,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(_ui->btnAxes, SIGNAL(released()), _ui->ccubeDisplay, SLOT(toggleAxesDisplay()));
     connect(_ui->btnPositions, SIGNAL(released()), _ui->ccubeDisplay, SLOT(togglePositionsDisplay()));
     connect(_ui->btnPatternAddOption, SIGNAL(released()), this, SLOT(addOption()));
-    connect(_ui->btnPatternDeleteOption, SIGNAL(released()), this, SLOT(deleteOption()));
     connect(_ui->patternSelectOption, SIGNAL(currentIndexChanged(int)), this, SLOT(updateAddOptionButtonActivation(int)));
     connect(_ui->patternOptionList, SIGNAL(currentRowChanged(int)), this, SLOT(updateOptionPanel(int)));
-    connect(_ui->btnPatternSelectImage, SIGNAL(released()), this, SLOT(getNewImage()));
-    //Description
-    connect(_ui->patternDescription, SIGNAL(newContent(QString)), this, SLOT(newDescription(QString)));
     //Options
     connect(_ui->optionBlinkms, SIGNAL(editingFinished()), this, SLOT(updateOption()));
     connect(_ui->optionBlinkX, SIGNAL(editingFinished()), this, SLOT(updateOption()));
@@ -468,7 +462,6 @@ void MainWindow::deactivatePatternView()
     _ui->btnResetView->setEnabled(false);
 
     _ui->ccubeDisplay->setEnabled(false);
-    _ui->ccubeDisplay->resetView();
 
     _ui->patternImageLabel->setEnabled(false);
     _ui->btnPatternSelectImage->setEnabled(false);
@@ -489,7 +482,7 @@ void MainWindow::activatePatternView()
     _ui->btnResetView->setEnabled(true);
 
     _ui->ccubeDisplay->setEnabled(true);
-    //_ui->ccubeDisplay->resetView();
+    _ui->ccubeDisplay->resetView();
 
     _ui->patternImageLabel->setEnabled(true);
     _ui->btnPatternSelectImage->setEnabled(true);
@@ -516,6 +509,7 @@ void MainWindow::updatePatternViewer(QModelIndex const & treeIndex)
 void MainWindow::setDisplayedPattern(Pattern * pattern)
 {
     _currentPattern = pattern;
+    DEBUG_MSG("Current displayed pattern is " << pattern);
     updatePatternContent();
 }
 
@@ -533,11 +527,7 @@ void MainWindow::updatePatternContent()
     _ui->patternDescription->setPlainText(_currentPattern->getDescription());
 
     //Image
-    _ui->patternImagePreview->clear();
-    if (_currentPattern->getImage().isNull())
-        _ui->patternImagePreview->setText("No image");
-    else
-        _ui->patternImagePreview->setPixmap(QPixmap::fromImage(_currentPattern->getImage()));
+    _ui->patternImagePreview->setPixmap(QPixmap::fromImage(_currentPattern->getImage()));
 
     //Points
     _ui->ccubeDisplay->displayPoints(_currentPattern->getAllPoints());
@@ -639,27 +629,4 @@ void MainWindow::updateOption()
     }
     else
         ERROR_MSG("Uknown option type: " << _ui->patternOptionPanel->currentIndex());
-}
-
-void MainWindow::newDescription(QString const & text)
-{
-    _undoStack->push(new Commands::PatternChangeDescription(this, _currentPattern, text));
-}
-
-void MainWindow::getNewImage()
-{
-    QString imageFileName = QFileDialog::getOpenFileName(this, QString("Load image..."), QString(), tr("Images (*.png *.jpg *.jpeg *.gif *.tiff *.tga *.bmp *.pbm *.xbm)"));
-    DEBUG_MSG("imageFileName " << imageFileName);
-
-    QImage image;
-    if (image.load(imageFileName))
-    {
-        //TODO: resize image
-        image = image.convertToFormat(QImage::Format_ARGB32);
-        _undoStack->push(new Commands::PatternChangeImage(this, _currentPattern, image));
-    }
-    else
-    {
-        ERROR_MSG("Could not open image " << imageFileName);
-    }
 }

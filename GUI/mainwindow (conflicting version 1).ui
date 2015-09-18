@@ -555,7 +555,7 @@
            </widget>
           </item>
           <item>
-           <widget class="DescriptionEditor" name="patternDescription">
+           <widget class="QPlainTextEdit" name="patternDescription">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -596,7 +596,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QToolButton" name="btnPatternDeleteOption">
+           <widget class="QToolButton" name="toolButton_2">
             <property name="toolTip">
              <string>Delete option</string>
             </property>
@@ -2009,11 +2009,6 @@ p, li { white-space: pre-wrap; }
    <class>DeselectableTreeView</class>
    <extends>QTreeView</extends>
    <header>deselectabletreeview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DescriptionEditor</class>
-   <extends>QPlainTextEdit</extends>
-   <header>descriptioneditor.h</header>
   </customwidget>
  </customwidgets>
  <resources>

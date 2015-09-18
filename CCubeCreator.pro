@@ -22,7 +22,11 @@ SOURCES += main.cpp\
     Database/database.cpp \
     Database/option.cpp \
     Database/dbnode.cpp \
-    Database/commands.cpp
+    Database/commands.cpp \
+    GUI/deselectabletreeview.cpp \
+    Database/root.cpp \
+    GUI/pickingray.cpp \
+    GUI/descriptioneditor.cpp
 
 HEADERS  += GUI/mainwindow.h \
     GUI/aboutwindow.h \
@@ -33,7 +37,11 @@ HEADERS  += GUI/mainwindow.h \
     Database/database.h \
     Database/option.h \
     Database/dbnode.h \
-    Database/commands.h
+    Database/commands.h \
+    GUI/deselectabletreeview.h \
+    Database/root.h \
+    GUI/pickingray.h \
+    GUI/descriptioneditor.h
 
 FORMS    += GUI/mainwindow.ui \
     GUI/aboutwindow.ui
